@@ -1,5 +1,8 @@
 <?php
 require_once "connection.php";
+require_once '../vendor/autoload.php';  // Include Composer autoload for JWT
+
+use \Firebase\JWT\JWT;
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -30,7 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Verify password
         if (password_verify($user_password, $user['password'])) {
-            echo json_encode(["status" => "success", "message" => "Login successful"]);
+            // Password is correct, generate JWT token
+            $secret_key = "your_secret_key";  // Use the same secret key as in registration
+            $issued_at = time();
+            $expiration_time = $issued_at + 3600;  // 1 hour from now
+            $payload = array(
+                "email" => $user_email,
+                "username" => $user['username'],
+                "iat" => $issued_at,
+                "exp" => $expiration_time
+            );
+
+            // Encode the JWT
+            $jwt = JWT::encode($payload, $secret_key, 'HS256');
+
+            echo json_encode([
+                "status" => "success",
+                "message" => "Login successful",
+                "token" => $jwt  // Send the JWT token in the response
+            ]);
         } else {
             echo json_encode(["status" => "error", "message" => "Incorrect password"]);
         }

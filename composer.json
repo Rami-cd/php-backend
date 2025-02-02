@@ -1,0 +1,17 @@
+{
+    "name": "administrator/backend-module",
+    "autoload": {
+        "psr-4": {
+            "Administrator\\BackendModule\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rami",
+            "email": "rami10k168@gmail.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^6.11"
+    }
+}
